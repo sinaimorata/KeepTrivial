@@ -71,13 +71,13 @@ public class Pregunta {
 		public void setSolucion(int solucion) {
 			this.solucion = solucion;
 		}
+		//metodo presentar x pantalla forma ordenada
 		@Override
 	    public String toString() {
 	        return "Pregunta: " + pregunta + "\n" +
 	               "1: " + respuestaUno + "\n" +
 	               "2: " + respuestDos + "\n" +
 	               "3: " + respuestaTres + "\n" +
-	               "4: " + respuestaCuatro + "\n" +
-	               "Respuesta correcta: " + solucion + "\n";
+	               "4: " + respuestaCuatro + "\n";
 	    }
 }

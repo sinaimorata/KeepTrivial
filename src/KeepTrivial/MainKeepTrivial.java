@@ -6,16 +6,129 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.Scanner;
 
 public class MainKeepTrivial {
 
 	public static void main(String[] args) {
+		//Genero lista con todos los temas
+		ArrayList<String> listaTrivial = new ArrayList<String>();
+		listaTrivial.add("Historia");
+		listaTrivial.add("Historia de Keep Coding");
+		listaTrivial.add("Inteligencia Artificial");
+		listaTrivial.add("Redes");
+		listaTrivial.add("Tecnología");
+		
+		
 		ArrayList<Tema> temas = getQuestions();
-        for (Tema tema : temas) {
-            System.out.println(tema);
-        }
+		 Scanner scanner = new Scanner(System.in);
+        //for (Tema tema : temas) {
+         //   System.out.println(tema);
+        //}
+        System.out.print("Indique el nombre del equipo1: ");
+        String nombreEquipo1 = scanner.nextLine();
+        Team equipo1 = new Team (nombreEquipo1);
+        
+       
+        System.out.print("Indique el nombre del equipo2: ");
+        String nombreEquipo2 = scanner.nextLine();
+        Team equipo2 = new Team (nombreEquipo2);
+        
+        ArrayList<Team> equipos = new ArrayList <> ();
+        equipos.add(equipo1);
+        equipos.add(equipo2);
+        //saco equipo y arranco con él
+        Team equipoElegido= seleccionarEquipoAleatorio(equipos);
+        comienzaJuego(equipoElegido,listaTrivial,temas);
 
 	}
+	
+	//elegir turno entre los dos equipos de la lista
+	public static Team seleccionarEquipoAleatorio(ArrayList<Team> equipos) {
+
+		Random random = new Random();
+		int index = random.nextInt(equipos.size());
+		return equipos.get(index);
+	}
+	
+	//elegir tema entre los posibles d la lista
+	public static String seleccionarTemaAleatorio(ArrayList<String> temas) {
+
+		Random random = new Random();
+		int index = random.nextInt(temas.size());
+		return temas.get(index);
+	}
+	
+	//elegir una pregunta entre las posibles de un tema
+	public static Pregunta seleccionarPreguntaAleatoria(Tema tema) {
+        Random random = new Random();
+        ArrayList<Pregunta> preguntas = tema.getPreguntas();
+        int index = random.nextInt(preguntas.size());
+        return preguntas.get(index);
+    }
+	//commparo mi lista de quesitos con la lista que contiene todos los temas. Me devuelve
+	//la diferencia.
+	public static ArrayList<String> getElementsNotInSecondList(ArrayList<String> listaPrincipal, ArrayList<String> miLista) {
+
+		listaPrincipal.removeAll(miLista);
+		return listaPrincipal;
+	}
+
+	public static void comienzaJuego (Team equipo,ArrayList<String> listaTrivial,ArrayList<Tema> temas) {
+		//Informamos del equipo que le toca jugar
+		System.out.println("Es el turno del equipo: " +equipo.getName());
+		
+		
+		//Se compara miLista de quesitos con la listaPrincipal
+		ArrayList<String> temasPorJugar = getElementsNotInSecondList(listaTrivial,equipo.getCheeses());
+		
+		//Se elige aleatoriamente un tema de la lista de temas por jugar
+		String temaElegido = seleccionarTemaAleatorio(temasPorJugar);
+		
+		//Informamos del tema sobre el que va a ser cuestionado
+		System.out.println("Vuestro tema es: " +temaElegido);
+		
+		// Encuentra el tema en la lista de temas
+        Tema temaSeleccionado = null;
+        for (Tema tema : temas) {
+            if (tema.getNombre().equals(temaElegido)) {
+                temaSeleccionado = tema;
+                
+                // Selecciona una pregunta aleatoria del tema
+                Pregunta preguntaAleatoria = seleccionarPreguntaAleatoria(temaSeleccionado);
+                System.out.println(preguntaAleatoria.toString());
+
+                Scanner scanner = new Scanner(System.in);
+                System.out.print("Indique su respuesta: ");
+                String respuesta = scanner.nextLine();
+                int numeroRespuesta = Integer.parseInt(respuesta);
+
+                while (numeroRespuesta<1 || numeroRespuesta>4) {
+                	System.out.println("Por favor, ingrese un número entre 1 y 4.");
+                	System.out.print("Indique su respuesta: ");
+                	respuesta = scanner.nextLine();
+                	numeroRespuesta = Integer.parseInt(respuesta);
+                }
+                              
+                //TODO: Comparamos con la solucion real. Pto 9.
+                
+
+
+            }
+        }
+	}
+
+
+
+
+	
+	
+	
+	
+	
+	
+	
 	public static void title(String text) {
 		int length = text.length();
 		printHashtagLine(length + 4); // Bordes
