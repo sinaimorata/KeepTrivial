@@ -40,8 +40,8 @@ public class MainKeepTrivial {
         equipos.add(equipo2);
         //saco equipo y arranco con él
         Team equipoElegido= seleccionarEquipoAleatorio(equipos);
-        comienzaJuego(equipoElegido,listaTrivial,temas);
-
+        comienzaJuego(equipoElegido,listaTrivial,temas,equipos);
+        
 	}
 	
 	//elegir turno entre los dos equipos de la lista
@@ -71,17 +71,25 @@ public class MainKeepTrivial {
 	//la diferencia.
 	public static ArrayList<String> getElementsNotInSecondList(ArrayList<String> listaPrincipal, ArrayList<String> miLista) {
 
-		listaPrincipal.removeAll(miLista);
-		return listaPrincipal;
+		ArrayList<String> diferencia = new ArrayList<>(listaPrincipal);
+	    diferencia.removeAll(miLista);
+	    return diferencia;
 	}
 
-	public static void comienzaJuego (Team equipo,ArrayList<String> listaTrivial,ArrayList<Tema> temas) {
+	public static void comienzaJuego (Team equipo,ArrayList<String> listaTrivial,ArrayList<Tema> temas,ArrayList<Team> equipos) {
 		//Informamos del equipo que le toca jugar
 		System.out.println("Es el turno del equipo: " +equipo.getName());
 		
 		
 		//Se compara miLista de quesitos con la listaPrincipal
 		ArrayList<String> temasPorJugar = getElementsNotInSecondList(listaTrivial,equipo.getCheeses());
+		
+		 // Verificar que hay temas por jugar
+        if (temasPorJugar.isEmpty()) {
+            System.out.println("No hay más temas por jugar.");
+            return;
+        }
+		
 		
 		//Se elige aleatoriamente un tema de la lista de temas por jugar
 		String temaElegido = seleccionarTemaAleatorio(temasPorJugar);
@@ -110,25 +118,57 @@ public class MainKeepTrivial {
                 	respuesta = scanner.nextLine();
                 	numeroRespuesta = Integer.parseInt(respuesta);
                 }
-                              
-                //TODO: Comparamos con la solucion real. Pto 9.
-                
-
+                 //comprobar si la respuesta es correcta             
+                if (numeroRespuesta == preguntaAleatoria.getSolucion()) {
+                	System.out.println("Felicidades,respuesta correcta");
+                	equipo.getCheeses().add(temaElegido);
+                	equipo.incrementarQuesitos();
+                	
+                	//comprobar si tiene todos los quesitos
+                	if(equipo.getNumeroDeQuesitos() == 5) {
+                		System.out.println("Bien, habeis ganado la partida");
+                		return;
+                	}else {
+                		//mostrar lista de quesitos acertados
+                		mostrarAciertos(equipo);
+                		//cambiar turno
+                		Team nuevoEquipo = cambiarEquipo(equipos,equipo);
+                		comienzaJuego(nuevoEquipo,listaTrivial,temas,equipos);
+                		
+                	}
+                	    	
+                	
+                }else {
+                	//En caso de haber fallado la pregunta
+                	System.out.println("Lo siento, erroooor. Perdeis turno");
+                	mostrarAciertos(equipo);
+                	
+                	//cambiar turno
+                	Team nuevoEquipo = cambiarEquipo(equipos,equipo);
+            		comienzaJuego(nuevoEquipo,listaTrivial,temas,equipos);
+                }
 
             }
         }
 	}
+	//funcion para cambiar turno
+	public static Team cambiarEquipo(ArrayList<Team> equipos, Team equipoActual) {
+		if(equipoActual.getName().equals(equipos.get(0).getName())) {
+			return equipos.get(1);
+		}else {
+			return equipos.get(0);
+		}
+
+	}
+
+	public static void mostrarAciertos(Team equipo) {
+		System.out.println("Los temas acertados son: "+ equipo.getNumeroDeQuesitos());
+		for(String quesito: equipo.getCheeses()) {
+			System.out.println(quesito);
+		}
+	}
 
 
-
-
-	
-	
-	
-	
-	
-	
-	
 	public static void title(String text) {
 		int length = text.length();
 		printHashtagLine(length + 4); // Bordes

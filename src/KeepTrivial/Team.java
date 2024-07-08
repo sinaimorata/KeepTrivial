@@ -45,6 +45,8 @@ public class Team {
 	}
 	
 	//Métodos
-	
+	public void incrementarQuesitos() {
+        this.numberOfCheeses++;
+    }
 	
 }
